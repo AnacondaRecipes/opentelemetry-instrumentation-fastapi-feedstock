@@ -22,10 +22,10 @@ requirements:
   run:
     - python
     - opentelemetry-api
-    - opentelemetry-instrumentation-asgi
-    - opentelemetry-instrumentation 
-    - opentelemetry-semantic-conventions
-    - opentelemetry-util-http
+    - opentelemetry-instrumentation-asgi ==0.41b0
+    - opentelemetry-instrumentation ==0.41b0
+    - opentelemetry-semantic-conventions ==0.41b0
+    - opentelemetry-util-http ==0.41b0
     # - requests ~=2.23
     # - opentelemetry-test-utils ==0.37b0
     # - opentelemetry-instrumentation-fastapi 
