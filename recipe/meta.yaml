@@ -1,46 +1,60 @@
 {% set name = "opentelemetry-instrumentation-fastapi" %}
-{% set version = "0.36b0" %}
+{% set version = "0.59b0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_fastapi-{{ version }}.tar.gz
-  sha256: 3dc7b1af7e268faeecbde220ffab1502dff1680bd9459216fdf28166fed17f14
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_fastapi-{{ version }}.tar.gz
+  sha256: e8fe620cfcca96a7d634003df1bc36a42369dedcdd6893e13fb5903aeeb89b2b
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
   number: 0
+  skip: true  # [py<310]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
-    - python >=3.7
+    - python
     - pip
     - hatchling
   run:
-    - python >=3.7
-    - opentelemetry-api >=1.12,<2.dev0
-    - opentelemetry-instrumentation-asgi ==0.36b0
-    - opentelemetry-instrumentation ==0.36b0
-    - opentelemetry-semantic-conventions ==0.36b0
-    - opentelemetry-util-http ==0.36b0
+    - python
+    - opentelemetry-api >=1.12,<2
+    - opentelemetry-instrumentation ==0.59b0
+    - opentelemetry-instrumentation-asgi ==0.59b0
+    - opentelemetry-semantic-conventions ==0.59b0
+    - opentelemetry-util-http ==0.59b0
+  run_constrained:
+    - fastapi >=0.92,<1
 
 test:
   imports:
     - opentelemetry
-    - opentelemetry.instrumentation
-  commands:
-    - pip check
+    - opentelemetry.instrumentation.fastapi
   requires:
     - pip
+    # fastapi is imported at module level in
+    # opentelemetry/instrumentation/fastapi/__init__.py; needed for
+    # the import test even though it's only in run_constrained.
+    - fastapi >=0.92,<1
+  commands:
+    - pip check
 
 about:
   home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-fastapi
   summary: OpenTelemetry FastAPI Instrumentation
+  description: |
+    OpenTelemetry instrumentation for FastAPI applications. Wraps a FastAPI
+    ASGI app to automatically generate spans for incoming requests,
+    propagate trace context, and emit standard HTTP semantic-convention
+    attributes. Built on top of opentelemetry-instrumentation-asgi.
   license: Apache-2.0
+  license_family: APACHE
   license_file: LICENSE
+  doc_url: https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/fastapi/fastapi.html
+  dev_url: https://github.com/open-telemetry/opentelemetry-python-contrib
 
 extra:
   recipe-maintainers:
