@@ -35,6 +35,10 @@ test:
     - opentelemetry.instrumentation.fastapi
   requires:
     - pip
+    # fastapi is imported at module level in
+    # opentelemetry/instrumentation/fastapi/__init__.py; needed for
+    # the import test even though it's only in run_constrained.
+    - fastapi >=0.92,<1
   commands:
     - pip check
 
