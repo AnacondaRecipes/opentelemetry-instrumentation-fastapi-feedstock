@@ -1,5 +1,5 @@
 {% set name = "opentelemetry-instrumentation-fastapi" %}
-{% set version = "0.64b0" %}
+{% set version = "0.66b1" %}
 
 package:
   name: {{ name }}
@@ -7,12 +7,18 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_fastapi-{{ version }}.tar.gz
-  sha256: 05f75149929e433c1630de381688e650bf651c1e1cce7f9a7b649a807dac8a98
+  sha256: 584cf9d2c4417ff8b2d6ff2bc606bfe13c8b3456018bf94f50f2cf658492505b
 
 build:
   number: 0
   skip: true  # [py<310]
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation  # [not win]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --no-compile  # [win]
+  # Skip compiling byte code to avoid extremely long paths in the conda package cache
+  # Due to the nested structure of this package and the long build string, environments
+  # can exceed the Windows path limit if installed into LOCALAPPDATA
+  skip_compile_pyc:  # [win]
+    - "*"            # [win]
 
 requirements:
   host:
@@ -54,7 +60,7 @@ about:
   license_family: APACHE
   license_file: LICENSE
   doc_url: https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/fastapi/fastapi.html
-  dev_url: https://github.com/open-telemetry/opentelemetry-python-contrib
+  dev_url: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/v0.66b1/instrumentation/opentelemetry-instrumentation-fastapi
 
 extra:
   recipe-maintainers:
